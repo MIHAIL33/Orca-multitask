@@ -7,16 +7,10 @@ import (
 	"github.com/MIHAIL33/Orca-multitask/pkg/runner"
 )
 
-type Service struct {
-	orcaRun runner.OrcaRunner
-	path path.Path
-}
+type Service struct {}
 
 func NewService() *Service {
-	return &Service{
-		orcaRun: runner.OrcaRunner{},
-		path: path.Path{},
-	}
+	return &Service{}
 }
 
 func (s *Service) Run() error {
@@ -24,6 +18,13 @@ func (s *Service) Run() error {
 	paths := path.NewPaths()
 
 	fmt.Println(paths)
+
+	for _, path := range paths.Paths {
+		orcaRun := runner.NewOrcaRunner(paths.Orca_path, path)
+		orcaRun.StartOrca()
+	}
+
+
 
 	return nil
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/MIHAIL33/Orca-multitask/pkg/service"
 	"github.com/spf13/viper"
@@ -13,6 +14,15 @@ func main() {
 		log.Fatalf("error initializing configs: %s", err.Error())
 	}
 
+	os.Mkdir("logs", 0755)
+
+	logfile, err := os.OpenFile("logs/log.txt", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error creating or opening log file: %v", err)
+	}
+	defer logfile.Close()
+	log.SetOutput(logfile)
+
 	service := service.NewService()
 	service.Run()
 
@@ -23,16 +33,3 @@ func initConfig() error {
 	viper.SetConfigName("config")
 	return viper.ReadInConfig()
 }
-
-// func start() {
-// 	cmd := exec.Command("/home/mihail/orca303/orca", "metanol_opt.inp")
-// 	cmd.Dir = "/home/mihail/orca_tasks/test/"
-// 	fmt.Println(cmd)
-// 	err := cmd.Start()
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	log.Printf("Waiting for command to finish...")
-// 	err = cmd.Wait()
-// 	log.Printf("Command finished with error: %v", err)
-// }

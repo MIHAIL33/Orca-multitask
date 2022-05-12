@@ -11,28 +11,28 @@ import (
 )
 
 type Path struct {
-	dir string
-	input string
-	output bool
+	Dir string
+	Input string
+	Output bool
 }
 
 type Paths struct {
-	orca_path string
-	paths []Path
+	Orca_path string
+	Paths []Path
 }
 
 func NewPaths() *Paths {
-	paths, err := GetPaths()
+	paths, err := getPaths()
 	if err != nil {
 		log.Fatal(err)
 	}
 	return &Paths{
-		orca_path: viper.GetString("path.orca_path"),
-		paths: *paths,
+		Orca_path: viper.GetString("path.orca_path"),
+		Paths: *paths,
 	}
 }
 
-func GetPaths() (*[]Path, error) {
+func getPaths() (*[]Path, error) {
 
 	var paths []Path
 
@@ -77,7 +77,7 @@ func GetPaths() (*[]Path, error) {
 
 func getPath(dir string) (*Path, error) {
 	var path Path
-	path.dir = dir
+	path.Dir = dir
 
 	files, err := ioutil.ReadDir(dir)
 	if err != nil {
@@ -95,12 +95,12 @@ func getPath(dir string) (*Path, error) {
 
 	for _, file := range files {
 		if !file.IsDir() {
-			if inpReg.MatchString(file.Name()) { path.input = file.Name() }
-			if outReg.MatchString(file.Name()) { path.output = true }
+			if inpReg.MatchString(file.Name()) { path.Input = file.Name() }
+			if outReg.MatchString(file.Name()) { path.Output = true }
 		}
 	}
 
-	if path.input == "" {
+	if path.Input == "" {
 		return nil, errors.New("there is no .inp file in the directory: " + dir)
 	}
 
