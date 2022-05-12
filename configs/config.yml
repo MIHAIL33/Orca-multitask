@@ -1,0 +1,8 @@
+path:
+  orca_path: "/home/mihail/orca303/orca"
+  work_path: "/home/mihail/orca_tasks/test"
+
+email:
+  response:
+    - "mihail_was96@mail.ru"
+    - "gleb172v@gmail.ru"
