@@ -24,6 +24,7 @@ type Paths struct {
 func NewPaths() *Paths {
 	paths, err := getPaths()
 	if err != nil {
+		fmt.Println(err)
 		log.Fatal(err)
 	}
 	return &Paths{
@@ -40,6 +41,7 @@ func getPaths() (*[]Path, error) {
 
 	files, err := ioutil.ReadDir(basePath)
 	if err != nil {
+		fmt.Println(err)
 		log.Fatal(err)
 	}
 
@@ -50,8 +52,8 @@ func getPaths() (*[]Path, error) {
 			countDir++
 			path, err := getPath(basePath + "/" + file.Name())
 			if err != nil {
-				//log.Panic(err)
 				fmt.Println(err)
+				log.Println(err)
 			} else {
 				paths = append(paths, *path)
 			}
@@ -61,8 +63,6 @@ func getPaths() (*[]Path, error) {
 	if countDir == 0 {
 		path, err := getPath(basePath)
 		if err != nil {
-			//log.Panic(err)
-			fmt.Println(err)
 			return nil, err
 		}
 		paths = append(paths, *path)

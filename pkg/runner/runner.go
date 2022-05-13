@@ -1,10 +1,12 @@
 package runner
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	"github.com/MIHAIL33/Orca-multitask/pkg/path"
 )
@@ -37,16 +39,34 @@ func (o *OrcaRunner) StartOrca() error {
 	err = cmd.Start()
 
 	if err != nil {
+		fmt.Println(err)
 		log.Fatal(err)
 	}
-	log.Printf("Waiting for calculation: %s", cmd.Dir)
+
+	log.Printf("waiting for calculation: %s", cmd.Dir)
+	fmt.Printf("waiting for calculation: %s\n", cmd.Dir)
 	err = cmd.Wait()
-	log.Printf("Command finished with error: %v", err)
+	if err != nil {
+		log.Printf("calculation %s finished with error: %v", cmd.Dir, err)
+		fmt.Printf("calculation %s finished with error: %v\n", cmd.Dir, err)
+	}
+	log.Printf("calculation %s finished without errors", cmd.Dir)
+	fmt.Printf("calculation %s finished without errors\n", cmd.Dir)
 	return nil
 }
 
 func getNameOutputFile(input string) string {
 	strs := strings.Split(input, ".")
 	strs[len(strs) - 1] = "out"
-	return strings.Join(strs, ".")
+	nameOut := strings.Join(strs, ".")
+
+	if _, err := os.Stat(nameOut); err != nil {
+		if os.IsNotExist(err) {
+			return nameOut
+		}
+	} 
+
+	strs[len(strs) - 2] = strs[len(strs) - 2] + "_" + time.Now().Format("20060102150405")
+	nameOut = strings.Join(strs, ".")
+	return nameOut
 }
