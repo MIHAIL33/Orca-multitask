@@ -49,6 +49,7 @@ func (o *OrcaRunner) StartOrca() error {
 	if err != nil {
 		log.Printf("calculation %s finished with error: %v", cmd.Dir, err)
 		fmt.Printf("calculation %s finished with error: %v\n", cmd.Dir, err)
+		return err
 	}
 	log.Printf("calculation %s finished without errors", cmd.Dir)
 	fmt.Printf("calculation %s finished without errors\n", cmd.Dir)

@@ -2,10 +2,13 @@ package service
 
 import (
 	"fmt"
+	"log"
 	"os"
 
+	"github.com/MIHAIL33/Orca-multitask/pkg/mailer"
 	"github.com/MIHAIL33/Orca-multitask/pkg/path"
 	"github.com/MIHAIL33/Orca-multitask/pkg/runner"
+	"github.com/spf13/viper"
 )
 
 type Service struct {}
@@ -22,10 +25,37 @@ func (s *Service) Run() error {
 
 	for _, path := range paths.Paths {
 		orcaRun := runner.NewOrcaRunner(paths.Orca_path, path)
-		orcaRun.StartOrca()
+		err := orcaRun.StartOrca()
+
+		if viper.GetBool("email.mail_successed") {
+
+			if err != nil {
+				failedMail := mailer.NewMailer(path.Dir, mailer.Failed)
+				err = failedMail.SendMail()
+				if err != nil {
+					log.Println(err)
+				}
+				log.Printf("send failed mail: %s", path.Dir)
+			} else {
+				if len(paths.Paths) > 1 {
+					successedMail := mailer.NewMailer(path.Dir, mailer.Successed)
+					err = successedMail.SendMail()
+					if err != nil {
+						log.Println(err)
+					}
+					log.Printf("send successed mail: %s", path.Dir)
+				}
+			}
+		}
 	}
 
-
+	finishMail := mailer.NewMailer(viper.GetString("path.work_path"), mailer.Finished)
+	err := finishMail.SendMail()
+	if err != nil {
+		log.Println(err)
+	}
+	log.Printf("send finished mail: %s", viper.GetString("path.work_path"))
+	fmt.Printf("send finished mail: %s\n", viper.GetString("path.work_path"))
 
 	return nil
 }

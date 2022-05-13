@@ -3,6 +3,8 @@ path:
   work_path: "/home/mihail/orca_tasks/test"
 
 email:
-  response:
+  mail_successed: true #sending an email after each interim calculation
+  addressees:
     - "mihail_was96@mail.ru"
-    - "gleb172v@gmail.ru"
+
+
